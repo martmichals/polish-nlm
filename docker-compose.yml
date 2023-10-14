@@ -1,0 +1,17 @@
+version: '3'
+services:
+  dev:
+    image: nlp-dev-cuda
+    tty: true
+    build:
+      context: .
+    volumes:
+      - .:/polish-nlm
+    mem_limit: ${MEM_LIMIT_ML}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: ${GPU_COUNT_ML}
+              capabilities: [gpu]
