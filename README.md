@@ -21,3 +21,11 @@ Attach to the running container to then run further commands:
 ```
 docker compose exec -it dev /bin/bash
 ```
+
+
+## Evaluation
+
+The code for training/evaluation is derived from the 
+[KLEJ Repository](https://github.com/allegro/klejbenchmark-baselines).
+The license for the code may be found [here](https://github.com/allegro/klejbenchmark-baselines/blob/master/LICENSE).
+This is an Apache License (v2.0).
