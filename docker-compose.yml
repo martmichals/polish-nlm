@@ -15,3 +15,7 @@ services:
             - driver: nvidia
               count: ${GPU_COUNT_ML}
               capabilities: [gpu]
+    environment:
+      - PYTHONPATH=/polish-nlm/KLEJ
+      - WANDB_API_KEY=${WANDB_API_KEY}
+      - WANDB_PROJECT=${WANDB_PROJECT}

@@ -6,8 +6,8 @@ import typing as t
 import numpy as np
 import pandas as pd
 import torch
+from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.callbacks import ModelCheckpoint
-from pytorch_lightning.loggers import TensorBoardLogger
 
 from klejbenchmark_baselines.config import Config
 from klejbenchmark_baselines.dataset import Datasets
@@ -143,7 +143,7 @@ def run() -> None:
     model = KlejTransformer(task, datasets)
 
     # train
-    logger = TensorBoardLogger(
+    logger = WandbLogger(
         save_dir=config.logger_path,
         name=config.run_id,
         version=config.task_name,

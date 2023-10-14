@@ -1,2 +1,3 @@
-# Ignore the data
+# Ignore the data and outputs from the training process
 data
+output

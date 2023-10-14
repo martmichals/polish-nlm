@@ -1,1 +1,9 @@
 transformers==4.34.0
+numpy
+pandas
+scikit-learn
+scipy
+tqdm
+pytorch-lightning==0.7.3
+sacremoses
+wandb
