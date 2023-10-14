@@ -29,3 +29,9 @@ The code for training/evaluation is derived from the
 [KLEJ Repository](https://github.com/allegro/klejbenchmark-baselines).
 The license for the code may be found [here](https://github.com/allegro/klejbenchmark-baselines/blob/master/LICENSE).
 This is an Apache License (v2.0).
+
+Download the KLEJ data:
+
+```
+cd /polish-nlm/KLEJ/scripts && bash download_klej.sh
+```
