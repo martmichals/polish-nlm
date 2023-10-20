@@ -24,6 +24,7 @@ class KlejTransformer(pl.LightningModule):
 
         self.task = task
         self.datasets = datasets
+        self.validation_step_outputs = []
 
         if task.output_type == 'classification':
             num_labels = len(self.datasets.train_ds.target_encoder.classes_)
@@ -111,13 +112,12 @@ class KlejTransformer(pl.LightningModule):
 
         metrics = {
             'lr': self.lr_scheduler.get_last_lr()[-1],
-            'train_loss': loss.detach().cpu().numpy(),
+            'train_loss': float(loss.detach().cpu().numpy()),
         }
-
+        self.log_dict(metrics)
         output = {
             'loss': loss,
-            'log': metrics,
-            'progress_bar': metrics,
+            'progress_bar': metrics
         }
 
         return output
@@ -142,13 +142,16 @@ class KlejTransformer(pl.LightningModule):
             output['val_pred'] = np.squeeze(logits)
         else:
             raise KeyError(f'Output type "{self.task.output_type}" is not supported.')
+        
+        # Set output for callback
+        self.validation_step_outputs.append(output)
 
         return output
 
-    def validation_epoch_end(self, outputs: t.List[t.Dict[str, t.Any]]) -> t.Dict[str, t.Any]:
-        loss = np.array([x['val_loss'] for x in outputs])
-        pred = np.concatenate([x['val_pred'] for x in outputs])
-        true = np.concatenate([x['val_true'] for x in outputs])
+    def on_validation_epoch_end(self) -> t.Dict[str, t.Any]:
+        loss = np.array([x['val_loss'] for x in self.validation_step_outputs])
+        pred = np.concatenate([x['val_pred'] for x in self.validation_step_outputs])
+        true = np.concatenate([x['val_true'] for x in self.validation_step_outputs])
 
         metrics = {
             'val_loss': np.mean(loss),
@@ -156,9 +159,10 @@ class KlejTransformer(pl.LightningModule):
         }
 
         output = {
-            'log': metrics,
-            'progress_bar': metrics,
+            'progress_bar': metrics
         }
+        self.log_dict(metrics)
+        self.validation_step_outputs.clear()
 
         return output
 

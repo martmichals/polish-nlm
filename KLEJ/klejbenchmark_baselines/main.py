@@ -15,6 +15,8 @@ from klejbenchmark_baselines.model import KlejTransformer
 from klejbenchmark_baselines.task import TASKS
 from klejbenchmark_baselines.trainer import TrainerWithPredictor
 
+# High MM precision for tensor cores
+torch.set_float32_matmul_precision('high')
 
 def parse_bool(value: str) -> bool:
     if value.lower() in ['true', 't', 'yes', 'y', '1']:
@@ -134,39 +136,46 @@ def set_seed(seed: int, num_gpu: int) -> None:
 
 
 def run() -> None:
+    # Parse arguments
     args_dict = parse_args()
     config = Config.from_argparse(args_dict)
+
+    # Set up task
     task = TASKS[args_dict['task_name']](config)
+
+    # Set up training, validation, and test sets
     datasets = Datasets(task)
 
+    # Set up seeds
     set_seed(config.seed, config.num_gpu)
+
+    # Initialize the model
     model = KlejTransformer(task, datasets)
 
-    # train
+    # Create a logger
+    if not os.path.exists(config.logger_path):
+        os.makedirs(config.logger_path)
     logger = WandbLogger(
-        save_dir = config.logger_path,
         name = config.run_id,
-        tags = (config.task_name,)
+        save_dir = config.logger_path
     )
-    checkpoint_callback = ModelCheckpoint(
-        filepath=os.path.join(config.checkpoint_path, config.run_id, config.task_name, '{epoch}'),
-    )
+
+    # Create a trainer
     trainer = TrainerWithPredictor(
-        weights_summary=None,
+        devices=1,
         logger=logger,
-        checkpoint_callback=checkpoint_callback,
-        accumulate_grad_batches=config.gradient_accumulation_steps,
-        gradient_clip_val=config.max_grad_norm,
+        accelerator='gpu',
+        deterministic=True,
         max_epochs=config.num_train_epochs,
-        gpus=config.num_gpu,
-        **({'distributed_backend': 'ddp'} if config.num_gpu > 1 else {}),
+        gradient_clip_val=config.max_grad_norm,
+        log_every_n_steps=10,
+        accumulate_grad_batches=config.gradient_accumulation_steps
     )
     trainer.fit(model)
 
     # predict
     pred = trainer.predict()['labels']
     pd.DataFrame({'target': pred}).to_csv(config.predict_path, index=False)
-
 
 if __name__ == "__main__":
     run()
