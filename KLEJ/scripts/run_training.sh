@@ -3,7 +3,7 @@ set -euo pipefail
 IFS=$'\n\t'
 
 # User provided arguments
-RUN_ID_PREFIX="klej_herbert"
+RUN_ID_PREFIX="klej_herbert_cased"
 DATA_PATH="/polish-nlm/KLEJ/data"
 OUTPUT_PATH="/polish-nlm/KLEJ/output"
 TOKENIZER_NAME_OR_PATH="allegro/herbert-klej-cased-tokenizer-v1"  # local path or the name of the transformers tokenizer
@@ -33,7 +33,7 @@ for task_name in "${task_names[@]}"; do
 
     # Run task training
     python /polish-nlm/KLEJ/klejbenchmark_baselines/main.py \
-      --run-id "${run_id}" \
+      --run-id "${task_name}_${run_id}" \
       --task-name "${task_name}" \
       --task-path "${task_path}/" \
       --predict-path "${OUTPUT_PATH}/submissions/${run_id}/test_pred_${task_name}.tsv" \

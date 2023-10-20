@@ -144,9 +144,9 @@ def run() -> None:
 
     # train
     logger = WandbLogger(
-        save_dir=config.logger_path,
-        name=config.run_id,
-        version=config.task_name,
+        save_dir = config.logger_path,
+        name = config.run_id,
+        tags = (config.task_name,)
     )
     checkpoint_callback = ModelCheckpoint(
         filepath=os.path.join(config.checkpoint_path, config.run_id, config.task_name, '{epoch}'),

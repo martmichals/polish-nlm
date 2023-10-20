@@ -6,7 +6,7 @@ WORKDIR /polish-nlm
 
 # Install required packages
 RUN apt-get update
-RUN apt-get install -y curl unzip
+RUN apt-get install -y curl unzip zip
 
 # Install additional python dependencies
 COPY requirements.txt /polish-nlm/
