@@ -10,6 +10,7 @@ TOKENIZER_NAME_OR_PATH="allegro/herbert-klej-cased-tokenizer-v1"  # local path o
 MODEL_NAME_OR_PATH="allegro/herbert-klej-cased-v1"  # local path or the name of the transformers model
 
 task_names=("nkjp-ner" "cdsc-e" "cdsc-r" "cbd" "polemo2.0-in" "polemo2.0-out" "dyk" "psc" "ar")
+task_names=("nkjp-ner")
 run_date="$(date +%Y%m%d_%H%M%S)"
 run_id="${RUN_ID_PREFIX}_${run_date}"
 
