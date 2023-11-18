@@ -50,7 +50,7 @@ def parse_args() -> t.Dict[str, t.Any]:
         help="Path to store predictions for the test set.",
     )
     parser.add_argument(
-        "--logger-path", type=str, required=True,
+        "--logger-path", type=str, required=False,
         help="Path to store tensorboard logs.",
     )
     parser.add_argument(
@@ -153,12 +153,15 @@ def run() -> None:
     model = KlejTransformer(task, datasets)
 
     # Create a logger
-    if not os.path.exists(config.logger_path):
-        os.makedirs(config.logger_path)
-    logger = WandbLogger(
-        name = config.run_id,
-        save_dir = config.logger_path
-    )
+    if config.logger_path is not None:
+        if not os.path.exists(config.logger_path):
+            os.makedirs(config.logger_path)
+        logger = WandbLogger(
+            name = config.run_id,
+            save_dir = config.logger_path
+        )
+    else:
+        logger = None
 
     # Create a trainer
     trainer = TrainerWithPredictor(

@@ -3,11 +3,11 @@ set -euo pipefail
 IFS=$'\n\t'
 
 # User provided arguments
-RUN_ID_PREFIX="klej_herbert_cased"
+RUN_ID_PREFIX="klej_herbert_large"
 DATA_PATH="/polish-nlm/KLEJ/data"
 OUTPUT_PATH="/polish-nlm/KLEJ/output"
-TOKENIZER_NAME_OR_PATH="allegro/herbert-klej-cased-tokenizer-v1"  # local path or the name of the transformers tokenizer
-MODEL_NAME_OR_PATH="allegro/herbert-klej-cased-v1"  # local path or the name of the transformers model
+TOKENIZER_NAME_OR_PATH="allegro/herbert-large-cased"  # local path or the name of the transformers tokenizer
+MODEL_NAME_OR_PATH="allegro/herbert-large-cased"  # local path or the name of the transformers model
 
 task_names=("nkjp-ner" "cdsc-e" "cdsc-r" "cbd" "polemo2.0-in" "polemo2.0-out" "dyk" "psc" "ar")
 # TODO: Look at all tasks
@@ -39,13 +39,13 @@ for task_name in "${task_names[@]}"; do
       --task-name "${task_name}" \
       --task-path "${task_path}/" \
       --predict-path "${OUTPUT_PATH}/submissions/${run_id}/test_pred_${task_name}.tsv" \
-      --logger-path "${OUTPUT_PATH}/wandb/" \
       --checkpoint-path "${OUTPUT_PATH}/checkpoints/" \
       --tokenizer-name-or-path "${TOKENIZER_NAME_OR_PATH}" \
       --model-name-or-path "${MODEL_NAME_OR_PATH}" \
       --max-seq-length "${max_len}" \
       --batch-size "${batch_size}" \
       --gradient-accumulation-steps "${gradient_accumulation_steps}" \
+      --logger-path "${OUTPUT_PATH}/wandb/" \
       --num-gpu 1
 done
 

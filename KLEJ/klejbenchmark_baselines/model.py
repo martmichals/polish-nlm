@@ -3,9 +3,9 @@ import typing as t
 import numpy as np
 import pytorch_lightning as pl
 import torch
-from torch.optim import Optimizer
+from torch.optim import Optimizer, AdamW
 from torch.optim.lr_scheduler import LambdaLR, _LRScheduler
-from transformers import AdamW, AutoConfig, AutoModelForSequenceClassification
+from transformers import AutoConfig, AutoModelForSequenceClassification
 
 from klejbenchmark_baselines.dataset import Datasets
 from klejbenchmark_baselines.task import BaseTask
@@ -67,6 +67,11 @@ class KlejTransformer(pl.LightningModule):
             lr=self.task.config.learning_rate,
             eps=self.task.config.adam_epsilon,
         )
+
+        # for n, p in self.model.named_parameters():
+        #     print(f'{n}: {p.requires_grad} {p.numel()}')
+        optimized_params = sum(p.numel() for _, p in self.model.named_parameters())
+        print(f'Optimized parameters: {optimized_params}')
 
         return optimizer
 
