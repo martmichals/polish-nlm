@@ -252,5 +252,5 @@ TASKS = {
     'polemo2.0-out': PolEmoOutTask,
     'dyk': DYKTask,
     'psc': PSCTask,
-    'ar': ARTask,
+    'ar': ARTask
 }

@@ -1,80 +1,57 @@
 import typing as t
-from inspect import getmembers, isdatadescriptor
+from pydantic import BaseModel, conint, confloat
 
+class Config(BaseModel):
+    # Task
+    task_name: t.Optional[str] = None
+    """Name of the task model is being trained for"""
+    run_id: t.Optional[str] = None
+    """Unique ID for the run"""
 
-class BaseConfig:
+    # Paths
+    task_path: t.Optional[str] = None
+    """Path to the task dataset"""
+    predict_path: t.Optional[str] = None
+    """Path to store predictions for the test set"""
+    logger_path: t.Optional[str] = None
+    """TODO: Define this well"""
+    checkpoint_path: t.Optional[str] = None
+    """Path to store saved model"""
 
-    @classmethod
-    def from_argparse(cls, arguments) -> 'BaseConfig':
-        obj = cls()
-        for name in obj._prop_names():
-            arg_val = arguments.get(name)
-            if arg_val is not None:
-                setattr(obj, name, arg_val)
-        obj.validate_correctness()
-        return obj
+    # Tokenizer
+    tokenizer_name_or_path: t.Optional[str] = None
+    """Name or path for the tokenizer"""
+    max_seq_length: conint(gt=0) = 256
+    """Maximum length of the input sequence to the model"""
+    do_lower_case: bool = False
+    """If using an uncased model, set this flag to true, tokenizer parameter"""
 
-    @classmethod
-    def from_dict(cls, arguments) -> 'BaseConfig':
-        obj = cls()
-        for name in arguments:
-            arg_val = arguments.get(name)
-            if arg_val is not None:
-                setattr(obj, name, arg_val)
-        obj.validate_correctness()
-        return obj
+    # Model
+    nlm_name_or_path: t.Optional[str] = None
+    """Name or path to model data"""
+    learning_rate: confloat(gt=0) = 2e-5
+    """Initial learning rate"""
+    adam_epsilon: confloat(gt=0) = 1e-8
+    """Epsilon parameter for the ADAM optimizer"""
+    warmup_steps: conint(gt=0) = 100
+    """Number of lr warmup steps"""
+    batch_size: conint(gt=0, multiple_of=2) = 16
+    """Number of samples in a batch"""
+    gradient_accumulation_steps: conint(gt=0) = 2
+    """Number of batches for which to accumulate gradients"""
+    num_train_epochs: conint(gt=0) = 4
+    """Training epochs"""
+    weight_decay: confloat(ge=0.0) = 0.0
+    """Value of weight decay"""
+    max_grad_norm: confloat(gt=0) = 1.0
+    """Maximal value for the gradient norm"""
 
-    def _prop_names(self) -> t.Set[str]:
-        names = set()
-        for name, _ in getmembers(type(self), isdatadescriptor):
-            if not name.startswith('_'):
-                names.add(name)
+    # Reproducibility
+    seed: int = 42
+    """Seed for reproducibility"""
 
-        for name in self.__dict__.keys():
-            if not name.startswith('_'):
-                names.add(name)
-
-        return names
-
-    def validate_correctness(self):
-        raise NotImplementedError
-
-
-class Config(BaseConfig):
-
-    def __init__(self):
-        super().__init__()
-
-        # Task
-        self.task_name: t.Optional[str] = None
-        self.run_id: t.Optional[str] = None
-
-        # Data
-        self.task_path: t.Optional[str] = None
-        self.predict_path: t.Optional[str] = None
-        self.logger_path: t.Optional[str] = None
-        self.checkpoint_path: t.Optional[str] = None
-
-        # Tokenizer
-        self.tokenizer_name_or_path: t.Optional[str] = None
-        self.max_seq_length: int = 256
-        self.do_lower_case: bool = False
-
-        # Model
-        self.model_name_or_path: t.Optional[str] = None
-        self.learning_rate: float = 2e-5
-        self.adam_epsilon: float = 1e-8
-        self.warmup_steps: int = 100
-        self.batch_size: int = 16
-        self.gradient_accumulation_steps: int = 2
-        self.num_train_epochs: int = 4
-        self.weight_decay: float = 0.0
-        self.max_grad_norm: float = 1.0
-
-        # Other
-        self.seed: int = 42
-        self.num_workers: int = 4
-        self.num_gpu: int = 1
-
-    def validate_correctness(self):
-        assert self.num_train_epochs > 0
+    # Compute
+    num_workers: conint(ge=0) = 4
+    """Number of processes to use for the DataLoader. 0 for main process."""
+    num_gpu: conint(ge=0) = 1
+    """Number of GPUs to use. Set to 0 for CPU-only computation."""

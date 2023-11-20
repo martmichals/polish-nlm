@@ -33,5 +33,5 @@ This is an Apache License (v2.0).
 Download the KLEJ data:
 
 ```
-cd /polish-nlm/KLEJ/scripts && bash download_klej.sh
+cd /polish-nlm/KLEJ/scripts && python init_klej_artifacts.py
 ```
