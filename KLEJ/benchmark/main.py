@@ -6,13 +6,13 @@ import argparse
 import numpy as np
 import pandas as pd
 from pytorch_lightning import seed_everything
-from klejbenchmark_baselines.task import TASKS
+from benchmark.task import TASKS
 from pytorch_lightning.loggers import WandbLogger
-from klejbenchmark_baselines.config import Config
-from klejbenchmark_baselines.dataset import Datasets
+from benchmark.config import Config
+from benchmark.dataset import Datasets
 from pytorch_lightning.callbacks import ModelCheckpoint
-from klejbenchmark_baselines.model import KlejTransformer
-from klejbenchmark_baselines.trainer import TrainerWithPredictor
+from benchmark.model import KlejTransformer
+from benchmark.trainer import TrainerWithPredictor
 
 # High MM precision for tensor cores
 torch.set_float32_matmul_precision('high')

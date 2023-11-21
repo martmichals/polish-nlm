@@ -5,8 +5,8 @@ import pandas as pd
 from scipy.stats import spearmanr
 from sklearn.metrics import accuracy_score, f1_score
 
-from klejbenchmark_baselines.config import Config
-from klejbenchmark_baselines.metrics import weighted_mean_absolute_error
+from benchmark.config import Config
+from benchmark.metrics import weighted_mean_absolute_error
 
 
 class BaseTask:

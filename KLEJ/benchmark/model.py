@@ -7,8 +7,8 @@ from torch.optim import Optimizer, AdamW
 from torch.optim.lr_scheduler import LambdaLR, _LRScheduler
 from transformers import AutoConfig, AutoModelForSequenceClassification
 
-from klejbenchmark_baselines.dataset import Datasets
-from klejbenchmark_baselines.task import BaseTask
+from benchmark.dataset import Datasets
+from benchmark.task import BaseTask
 
 Batch = t.Dict[str, torch.Tensor]
 

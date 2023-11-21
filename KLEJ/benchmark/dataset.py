@@ -11,7 +11,7 @@ from torch.utils.data.dataloader import DataLoader
 from torch.utils.data.dataset import Dataset
 from transformers import AutoTokenizer, PreTrainedTokenizer
 
-from klejbenchmark_baselines.task import BaseTask
+from benchmark.task import BaseTask
 
 Batch = t.Dict[str, torch.Tensor]
 

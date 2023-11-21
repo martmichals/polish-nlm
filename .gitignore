@@ -161,3 +161,6 @@ cython_debug/
 
 # Weights and Biases
 wandb
+
+# Devcontainer environment variables
+devcontainer.env
